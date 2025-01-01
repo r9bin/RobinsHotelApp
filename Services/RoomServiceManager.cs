@@ -42,6 +42,12 @@ namespace HotelApp.Services
                         continue;
                     }
 
+                    if (!int.TryParse(numberInput, out _))
+                    {
+                        Console.WriteLine("Rumsnumret måste vara ett giltigt nummer.");
+                        continue;
+                    }
+
                     var existingRoom = dbContext.Room.FirstOrDefault(r => r.RoomNumber == numberInput);
                     if (existingRoom != null)
                     {

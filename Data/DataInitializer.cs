@@ -36,7 +36,8 @@ namespace HotelApp.Data
                 new Customer { Name = "Anna", LastName = "Andersson", Age = 25, Email = "anna.andersson@example.com", PhoneNumber = 123456789, IsActive = true },
                 new Customer { Name = "Erik", LastName = "Eriksson", Age = 35, Email = "erik.eriksson@example.com", PhoneNumber = 987654321, IsActive = true },
                 new Customer { Name = "Lisa", LastName = "Larsson", Age = 45, Email = "lisa.larsson@example.com", PhoneNumber = 456123789, IsActive = true },
-                new Customer { Name = "Olof", LastName = "Olsson", Age = 55, Email = "olof.olsson@example.com", PhoneNumber = 321654987, IsActive = true }
+                new Customer { Name = "Olof", LastName = "Olsson", Age = 55, Email = "olof.olsson@example.com", PhoneNumber = 321654987, IsActive = true },
+                new Customer { Name = "Bernt", LastName = "Karlsson", Age = 73, Email = "bernt.karlsson@example.com", PhoneNumber = 392935055, IsActive = true}
             };
 
             dbContext.Customer.AddRange(customers);
@@ -51,8 +52,8 @@ namespace HotelApp.Data
                 new Room { RoomNumber = "102", AmmountOfBeds = 1, Size = 58, IsAvailable = true},
                 new Room { RoomNumber = "103", AmmountOfBeds = 2, Size = 75, IsAvailable = true},
                 new Room { RoomNumber = "104", AmmountOfBeds = 2, Size = 71, IsAvailable = true},
-                new Room { RoomNumber = "105", AmmountOfBeds = 2, Size = 68, IsAvailable = true},
-                new Room { RoomNumber = "106", AmmountOfBeds = 2, Size = 80, IsAvailable = true}
+                new Room { RoomNumber = "105", AmmountOfBeds = 2, Size = 82, IsAvailable = true},
+                new Room { RoomNumber = "106", AmmountOfBeds = 2, Size = 87, IsAvailable = true}
             };
             dbContext.Room.AddRange(rooms);
         }

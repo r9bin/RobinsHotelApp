@@ -125,7 +125,11 @@ namespace HotelApp.Services
             {
                 return 0;
             }
-            else if (roomSize > 61)
+            else if (roomSize > 61 && roomSize <= 80)
+            {
+                return 1;
+            }
+            else if (roomSize > 80)
             {
                 return 2;
             }
