@@ -16,10 +16,12 @@ namespace HotelApp.Services
     {
         private readonly DbContextOptions<ApplicationDbContext> _options;
 
-        public RoomServiceManager(IdbContextFactoryStuff dbContextFactory)
+        public RoomServiceManager(IdbContextFactoryHelper dbContextFactory)
         {
             _options = dbContextFactory.CreateDbContext();
         }
+
+
 
         public void CreateRoom()
         {
@@ -28,7 +30,7 @@ namespace HotelApp.Services
                 Console.WriteLine("Skapa ett nytt Rum");
                 Console.WriteLine("=====================");
 
-                string numberInput;
+                string? numberInput;
                 while (true)
                 {
                     Console.WriteLine("Ange numret på Rummet: ");
@@ -51,6 +53,7 @@ namespace HotelApp.Services
                     }
                 }
 
+                Console.Clear();
                 int bedsInput;
                 while (true)
                 {
@@ -66,7 +69,9 @@ namespace HotelApp.Services
                     }
                 }
 
+                Console.Clear();
                 Console.WriteLine("Ange Storleken på Rummet: ");
+                Console.WriteLine("(Rum över 60 i storlek får möjlighet för extra sängval vid bokning)");
                 int sizeInput;
                 while (!int.TryParse(Console.ReadLine(), out sizeInput) || sizeInput <= 0)
                 {
@@ -80,8 +85,8 @@ namespace HotelApp.Services
                     AmmountOfBeds = bedsInput
                 });
                 dbContext.SaveChanges();
-                Console.WriteLine("Rummet skapades!");
-                Console.ReadLine();
+                Console.WriteLine($"Rummet '{numberInput}' skapades!");
+                Console.ReadKey();
             }
         }
 
@@ -97,9 +102,7 @@ namespace HotelApp.Services
 
                 if (rooms.Any())
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Här är en lista över alla LEDIGA Rum:");
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine("Här är en lista över alla helt lediga Rum:");                
                     Console.WriteLine("========================================");
 
                     foreach (var room in rooms)
@@ -107,14 +110,12 @@ namespace HotelApp.Services
                         bool isAvailable = !room.Bookings.Any();
                         if (isAvailable)
                         {
-                            Console.WriteLine($"Rumsnummer: {room.RoomNumber}, Sängplatser: {room.AmmountOfBeds}");
+                            Console.WriteLine($"Rumsnummer: {room.RoomNumber}, Storlek: {room.Size}, Sängplatser: {room.AmmountOfBeds}");
                         }
                     }
 
                     Console.WriteLine();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Här är en lista över alla BOKADE Rum:");
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine("Här är en lista över rum med vissa bokningar:");
                     Console.WriteLine("========================================");
 
                     foreach (var room in rooms)
@@ -150,31 +151,27 @@ namespace HotelApp.Services
             Console.Clear();
             using (var dbContext = new ApplicationDbContext(_options))
             {
-                var rooms = dbContext.Room.ToList();
+                var rooms = dbContext.Room
+                            .Where(room => !dbContext.Booking
+                            .Any(b => b.RoomId == room.RoomId))
+                            .ToList();
 
                 if (rooms.Any())
                 {
-                    Console.WriteLine("Här är en lista över alla Lediga Rum:");
+                    Console.WriteLine("Lista över rum som inte har en Bokning:");
                     Console.WriteLine("========================================");
 
-                    foreach (var room in rooms.Where(c => c.IsAvailable))
+                    foreach (var room in rooms)
                     {
                         Console.WriteLine($"ID: {room.RoomId}, Rumsnummer: {room.RoomNumber}");
                     }
                 }
-                else
-                {
-                    Console.WriteLine("Det finns inga Rum");
-                }
 
                 Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Välj ID på Rummet du vill Uppdatera");
-                Console.ForegroundColor = ConsoleColor.Gray;
 
                 int userInputUpdate;
 
-                // Loopar tills ett giltigt rumID anges
                 while (true)
                 {
                     if (int.TryParse(Console.ReadLine(), out userInputUpdate))
@@ -186,9 +183,7 @@ namespace HotelApp.Services
                             while (true)
                             {
                                 Console.Clear();
-                                Console.ForegroundColor = ConsoleColor.Green;
                                 Console.WriteLine($"Du uppdaterar Rummet med Rumsnummer: {roomToUpdate.RoomNumber} och RumID: {roomToUpdate.RoomId}");
-                                Console.ForegroundColor = ConsoleColor.Gray;
 
                                 Console.WriteLine("Välj vad du vill ändra hos Kunden:");
                                 Console.WriteLine("1. Rumsnummer");
@@ -200,28 +195,25 @@ namespace HotelApp.Services
                                     switch (choice)
                                     {
                                         case 1:
-                                            string numberInput;
+                                            string? numberInput;
                                             while (true)
                                             {
                                                 Console.WriteLine("Ange nytt Rumsnummer:");
 
                                                 numberInput = Console.ReadLine();
-
-                                                // Kontrollera om användaren har lämnat fältet tomt eller om det inte är ett giltigt tal
+                                              
                                                 if (string.IsNullOrWhiteSpace(numberInput))
                                                 {
                                                     Console.WriteLine("Rumsnummer får inte vara tomt. Försök igen.");
-                                                    continue; // Fortsätt att fråga om nytt rumsnummer
+                                                    continue;
                                                 }
 
-                                                // Kontrollera om input är ett giltigt heltal
                                                 if (!int.TryParse(numberInput, out int roomNumber))
                                                 {
                                                     Console.WriteLine("Rumsnummer måste vara ett nummer. Försök igen.");
-                                                    continue; // Fortsätt att fråga om nytt rumsnummer
+                                                    continue;
                                                 }
 
-                                                // Kontrollera om rumsnumret redan finns i databasen
                                                 var existingRoom = dbContext.Room.FirstOrDefault(r => r.RoomNumber == numberInput);
                                                 if (existingRoom != null)
                                                 {
@@ -229,7 +221,7 @@ namespace HotelApp.Services
                                                 }
                                                 else
                                                 {
-                                                    break; // Ut ur loopen när ett giltigt rumsnummer har angetts
+                                                    break;
                                                 }
                                             }
                                             roomToUpdate.RoomNumber = numberInput;
@@ -237,38 +229,64 @@ namespace HotelApp.Services
 
 
                                         case 2:
-                                            Console.WriteLine("Ange nytt antal Sängmöjligheter, 1 eller 2:");
+                                            while (true)
+                                            {
+                                                Console.WriteLine("Ange nytt antal Sängar, 1 eller 2:");
 
-                                            if (int.TryParse(Console.ReadLine(), out int bedsInput) && (bedsInput == 1 || bedsInput == 2))
-                                            {
-                                                roomToUpdate.AmmountOfBeds = bedsInput;
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine("Ogiltig inmatning. Ange antingen 1 eller 2.");
+                                                if (int.TryParse(Console.ReadLine(), out int bedsInput))
+                                                {
+                                                    if (bedsInput == 1 || bedsInput == 2)
+                                                    {
+                                                        roomToUpdate.AmmountOfBeds = bedsInput;
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                                        Console.WriteLine("Antalet sängar måste vara antingen 1 eller 2. Försök igen.");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("Ogiltig inmatning. Antalet sängar måste vara ett heltal. Försök igen.");
+                                                }
                                             }
                                             break;
+
 
                                         case 3:
-                                            Console.WriteLine("Ange ny Storlek:");
-                                            if (int.TryParse(Console.ReadLine(), out int newSize))
+                                            while (true)
                                             {
-                                                roomToUpdate.Size = newSize;
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine("Ogiltigt värde Storlek.");
+                                                int newSize;
+                                                Console.WriteLine("Ange ny Storlek (mellan 40 och 90):");
+
+                                                if (int.TryParse(Console.ReadLine(), out newSize))
+                                                {
+                                                    if (newSize >= 40 && newSize <= 90)
+                                                    {
+                                                        roomToUpdate.Size = newSize;
+                                                        break;  
+                                                    }
+                                                    else
+                                                    {
+                                                        Console.WriteLine("Storleken måste vara mellan 40 och 90. Försök igen.");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("Ogiltigt värde. Storleken måste vara ett heltal. Försök igen.");
+                                                }
                                             }
                                             break;
 
+
                                         default:
-                                            break;
+                                            continue;
                                     }
 
                                     dbContext.SaveChanges();
                                     Console.WriteLine("Ändringarna har sparats!");
                                     Console.ReadLine();
-                                    return; // När uppdateringen är klar, avsluta metoden och gå tillbaka till menyn
+                                    return;
                                 }
                             }
                         }
@@ -327,7 +345,6 @@ namespace HotelApp.Services
                         var roomToDelete = rooms.FirstOrDefault(c => c.RoomId == roomId);
                         if (roomToDelete != null)
                         {
-                            // Kontrollera om rummet har några bokningar
                             if (roomToDelete.Bookings.Any())
                             {
                                 Console.WriteLine($"Det finns bokningar på rummet med Rumsnummer: '{roomToDelete.RoomNumber}' och ID: {roomToDelete.RoomId}. " +
@@ -338,10 +355,8 @@ namespace HotelApp.Services
                                 Console.Clear();
                                 Console.WriteLine($"Rummet med Rumsnummer: '{roomToDelete.RoomNumber}' och ID: {roomToDelete.RoomId} är nu borttaget!");
 
-                                // Ta bort rummet från databasen
-                                dbContext.Room.Remove(roomToDelete);
-
-                                // Spara ändringarna i databasen
+                      
+                                dbContext.Room.Remove(roomToDelete);                            
                                 dbContext.SaveChanges();
                             }
                             break;

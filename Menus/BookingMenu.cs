@@ -1,5 +1,6 @@
 ﻿using HotelApp.Menus.Menus_Interfaces;
 using HotelApp.Services.Service_Interfaces;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,43 +13,43 @@ namespace HotelApp.Menus
     {
         public void BookingMenuNavigation()
         {
-            Console.Clear();
-            Console.WriteLine("Bokningsmeny");
-            Console.WriteLine("1. Skapa bokning");
-            Console.WriteLine("2. Visa bokningar");
-            Console.WriteLine("3. Uppdatera bokning");
-            Console.WriteLine("4. Ta bort bokning");
-            Console.WriteLine("5. Tillbaka");
-
-            int BookingChoice;
-            if (int.TryParse(Console.ReadLine(), out BookingChoice))
+            while (true)
             {
-                switch (BookingChoice)
+                Console.Clear();
+                Console.WriteLine("Bokningsmeny");
+                Console.WriteLine("1. Skapa bokning");
+                Console.WriteLine("2. Visa bokningar");
+                Console.WriteLine("3. Uppdatera bokning");
+                Console.WriteLine("4. Ta bort bokning");
+                Console.WriteLine("5. Tillbaka");
+
+                int BookingChoice;
+                if (int.TryParse(Console.ReadLine(), out BookingChoice))
                 {
-                    case 1:
-                        bookingServiceManager.StartBooking();
-                        break;
+                    switch (BookingChoice)
+                    {
+                        case 1:
+                            bookingServiceManager.StartBooking();
+                            break;
 
-                    case 2:
-                        bookingServiceManager.ViewBookings();
-                        break;
+                        case 2:
+                            bookingServiceManager.ViewBookings();
+                            break;
 
-                    case 3:
-                        bookingServiceManager.UpdateBooking();
-                        break;
+                        case 3:
+                            bookingServiceManager.UpdateBooking();
+                            break;
 
-                    case 4:
-                        bookingServiceManager.CancelBooking();
-                        break;
+                        case 4:
+                            bookingServiceManager.CancelBooking();
+                            break;
 
-                    case 5:
-                        return;
-                    default:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Ogiltigt val. Vänligen välj ett alternativ mellan 1 till 5.");
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                        Console.ReadKey();
-                        break;
+                        case 5:
+                            return;
+
+                        default:
+                            continue;
+                    }
                 }
             }
         }

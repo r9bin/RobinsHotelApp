@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241229130638_Fixded Properties")]
-    partial class FixdedProperties
+    [Migration("20250101123546_initiate")]
+    partial class initiate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,8 +77,7 @@ namespace HotelApp.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PhoneNumber")
                         .HasColumnType("int");
@@ -99,8 +98,8 @@ namespace HotelApp.Migrations
                     b.Property<int>("AmmountOfBeds")
                         .HasColumnType("int");
 
-                    b.Property<bool>("ExtraBedOption")
-                        .HasColumnType("bit");
+                    b.Property<int>("ExtraBedOption")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");

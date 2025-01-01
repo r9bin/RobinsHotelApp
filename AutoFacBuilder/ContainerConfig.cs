@@ -22,9 +22,6 @@ namespace HotelApp.AutoFacBuilder
         {
             var builder = new ContainerBuilder();
 
-            //builder.RegisterType<CustomerService>().As<ICustomerService>();
-            //builder.RegisterType<Customer>().As<ICustomer>();
-            //builder.RegisterType<Booking>().As<IBookings>();
             builder.RegisterType<App>().As<IApp>();
             builder.RegisterType<DataInitializer>().As<IDataInitializer>();
 
@@ -38,7 +35,7 @@ namespace HotelApp.AutoFacBuilder
             builder.RegisterType<CustomerServiceManager>().As<ICustomerServiceManager>();
             builder.RegisterType<RoomServiceManager>().As<IRoomServiceManager>();
 
-            builder.RegisterType<DbContextFactory>().As<IdbContextFactoryStuff>();
+            builder.RegisterType<DbContextFactory>().As<IdbContextFactoryHelper>();
 
             return builder.Build();
         }

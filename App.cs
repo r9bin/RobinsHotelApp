@@ -13,18 +13,8 @@ using System.Threading.Tasks;
 
 namespace HotelApp
 {
-    public class App(IMainMenu mainMenu, IdbContextFactoryStuff contextFactory, IDataInitializer dataInitializer) : IApp
+    public class App(IMainMenu mainMenu, IdbContextFactoryHelper contextFactory, IDataInitializer dataInitializer) : IApp
     {
-
-        // Vi behöver inte koden nedanför nu, för att vi anropar dom i 'Primary Constructorn' vid start av Klassen: "public class App(IMenu menu) : IApp"
-        
-        //IMenu _menu;
-
-        //public App( IMenu menu)
-        //{
-        //    _menu = menu;
-        //}
-        
 
         public void Run()
         {
@@ -33,7 +23,6 @@ namespace HotelApp
 
             using (var dbContext = new ApplicationDbContext(options))
             {
-                //dbContext.Database.Migrate();
                 dataInitializer.MigrateAndSeed(dbContext);
             }
 

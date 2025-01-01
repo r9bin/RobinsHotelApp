@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HotelApp.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initiate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,7 @@ namespace HotelApp.Migrations
                 {
                     CustomerId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -27,6 +27,23 @@ namespace HotelApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Customer", x => x.CustomerId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Room",
+                columns: table => new
+                {
+                    RoomId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoomNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AmmountOfBeds = table.Column<int>(type: "int", nullable: false),
+                    Size = table.Column<int>(type: "int", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    ExtraBedOption = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Room", x => x.RoomId);
                 });
 
             migrationBuilder.CreateTable(
@@ -49,29 +66,12 @@ namespace HotelApp.Migrations
                         principalTable: "Customer",
                         principalColumn: "CustomerId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Room",
-                columns: table => new
-                {
-                    RoomId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AmmountOfBeds = table.Column<int>(type: "int", nullable: false),
-                    Size = table.Column<int>(type: "int", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    ExtraBedOption = table.Column<bool>(type: "bit", nullable: false),
-                    BookingId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Room", x => x.RoomId);
                     table.ForeignKey(
-                        name: "FK_Room_Booking_BookingId",
-                        column: x => x.BookingId,
-                        principalTable: "Booking",
-                        principalColumn: "BookingId");
+                        name: "FK_Booking_Room_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Room",
+                        principalColumn: "RoomId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -80,24 +80,22 @@ namespace HotelApp.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Room_BookingId",
-                table: "Room",
-                column: "BookingId",
-                unique: true,
-                filter: "[BookingId] IS NOT NULL");
+                name: "IX_Booking_RoomId",
+                table: "Booking",
+                column: "RoomId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Room");
-
-            migrationBuilder.DropTable(
                 name: "Booking");
 
             migrationBuilder.DropTable(
                 name: "Customer");
+
+            migrationBuilder.DropTable(
+                name: "Room");
         }
     }
 }

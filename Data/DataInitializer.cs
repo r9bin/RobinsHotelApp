@@ -16,7 +16,6 @@ namespace HotelApp.Data
         {
             dbContext.Database.Migrate(); 
 
-
             if (!dbContext.Customer.Any())
             {
                 SeedCustomers(dbContext);

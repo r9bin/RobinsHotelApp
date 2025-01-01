@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelApp.Factory.DbContext_Interface
 {
-    public interface IdbContextFactoryStuff
+    public interface IdbContextFactoryHelper
     {
         DbContextOptions<ApplicationDbContext> CreateDbContext();
     }

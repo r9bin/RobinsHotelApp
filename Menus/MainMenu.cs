@@ -12,7 +12,6 @@ namespace HotelApp.Menus
 {
     public class MainMenu(IBookingMenu bookingMenu, ICustomerMenu customerMenu, IRoomMenu roomMenu) : IMainMenu
     {
-
         public void MainMenuNavigation()
         {
             while (true)
@@ -45,9 +44,7 @@ namespace HotelApp.Menus
                             return;
 
                         default:
-                            Console.WriteLine("Ogiltigt, ange en siffra mellan 1 till 5");
-                            Console.ReadKey();
-                            break;
+                            continue;
                     }
                 }
             }

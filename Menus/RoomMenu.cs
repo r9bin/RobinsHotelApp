@@ -45,9 +45,9 @@ namespace HotelApp.Menus
 
                         case 5:
                             return;
-                        default:
 
-                            break;
+                        default:
+                            continue;
                     }
                 }
             }

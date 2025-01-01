@@ -11,12 +11,6 @@ namespace HotelApp.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        // 6: Create DBContext(boiler plate code). Create options & connectionstring variables(boiler plate code).
-
-        // DbSet-skikt för att representera tabellerna i databasen.
-        // Varje DbSet skapar en "tabell" i databasen för respektive typ.
-        //public DbSet<Person> Person { get; set; }
-        //public DbSet<Invoice> Invoice { get; set; }
         public DbSet<Booking> Booking { get; set; }
         public DbSet<Customer> Customer { get; set; }
         public DbSet<Room> Room { get; set; }
@@ -41,7 +35,6 @@ namespace HotelApp.Data
         {
         }
 
-        //}
             /// <summary>
             /// Metoden `OnConfiguring`: används första gången applikationen körs för att
             /// koppla databasen till rätt server.

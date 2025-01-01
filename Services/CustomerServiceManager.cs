@@ -19,7 +19,7 @@ namespace HotelApp.Services
     {
         private readonly DbContextOptions<ApplicationDbContext> _options;
 
-        public CustomerServiceManager(IdbContextFactoryStuff dbContextFactory)
+        public CustomerServiceManager(IdbContextFactoryHelper dbContextFactory)
         {
             _options = dbContextFactory.CreateDbContext();
         }
@@ -30,12 +30,13 @@ namespace HotelApp.Services
 
         public void CreateCustomer()
         {
+            Console.Clear();
             using (var dbContext = new ApplicationDbContext(_options))
             {
                 Console.WriteLine("Skapa en ny Kund");
                 Console.WriteLine("=====================");
 
-                string customerName;
+                string? customerName;
                 while (true)
                 {
                     Console.WriteLine("Ange ditt namn:");
@@ -49,7 +50,7 @@ namespace HotelApp.Services
                     Console.WriteLine("Namnet får inte vara tomt och får inte innehålla siffror. Vänligen ange ett giltigt namn.");
                 }
 
-                string lastNameInput;
+                string? lastNameInput;
                 while (true)
                 {
                     Console.WriteLine("Ange ditt Efternamn:");
@@ -67,6 +68,7 @@ namespace HotelApp.Services
                 while (true)
                 {
                     Console.WriteLine("Ange Ålder:");
+                    Console.WriteLine("(Från 15 till 100år)");
                     var ageInputRaw = Console.ReadLine();
 
                     if (int.TryParse(ageInputRaw, out ageInput) && ageInput >= 15 && ageInput <= 100)
@@ -84,6 +86,8 @@ namespace HotelApp.Services
                     LastName = lastNameInput
                 });
                 dbContext.SaveChanges();
+                Console.WriteLine("Användaren Skapades!");
+                Console.ReadKey();
             }
         }
 
@@ -115,6 +119,7 @@ namespace HotelApp.Services
 
                     while (true)
                     {
+                        Console.WriteLine();
                         Console.WriteLine("Välj den Kund du vill ha information ifrån (ange ID):");
 
                         if (int.TryParse(Console.ReadLine(), out var userIDchoice))
@@ -177,7 +182,7 @@ namespace HotelApp.Services
 
                 int userInputUpdate = 0;
 
-                // Be om ett giltigt ID tills användaren anger ett korrekt ID
+
                 while (true)
                 {
                     if (!int.TryParse(Console.ReadLine(), out userInputUpdate))
@@ -246,7 +251,7 @@ namespace HotelApp.Services
                         break;
 
                     case 6:
-                        UpdateCustomerStatus(customerToUpdate); // Metod som hanterar aktivera/inaktivera
+                        UpdateCustomerStatus(customerToUpdate);
                         break;
 
                     default:
@@ -257,7 +262,7 @@ namespace HotelApp.Services
                 dbContext.SaveChanges();
                 Console.WriteLine("Ändringarna har sparats!");
                 Console.ReadKey();
-                break; // Efter att ändringar sparats, avsluta loopen och metoden
+                break; 
             }
         }
 
@@ -300,30 +305,20 @@ namespace HotelApp.Services
                         case 1:
                             customerToUpdate.IsActive = true;
                             Console.WriteLine("Kunden har blivit aktiverad.");
-                            Console.ReadKey();
                             return;
 
                         case 2:
                             customerToUpdate.IsActive = false;
                             Console.WriteLine("Kunden har blivit inaktiverad.");
-                            Console.ReadKey();
                             return;
 
                         case 3:
                             Console.WriteLine("Ändring av aktiveringsstatus avbröts.");
-                            Console.ReadKey();
                             return;
 
                         default:
-                            Console.WriteLine("Ogiltigt val. Försök igen.");
-                            Console.ReadKey();
-                            break;
+                            continue;
                     }
-                }
-                else
-                {
-                    Console.WriteLine("Ogiltigt val. Försök igen.");
-                    Console.ReadKey();
                 }
             }
         }
@@ -368,7 +363,6 @@ namespace HotelApp.Services
             {
                 Console.WriteLine("Ange ny Ålder (mellan 15 och 100):");
 
-                // Försök att läsa in en ålder och validera om den ligger mellan 15 och 100
                 if (int.TryParse(Console.ReadLine(), out int newAge))
                 {
                     if (newAge >= 15 && newAge <= 100)
@@ -400,7 +394,7 @@ namespace HotelApp.Services
 
             while (true)
             {
-                string userInput = Console.ReadLine();
+                string? userInput = Console.ReadLine();
 
                 if (string.IsNullOrWhiteSpace(userInput))
                 {

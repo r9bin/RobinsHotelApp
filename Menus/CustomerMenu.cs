@@ -17,7 +17,6 @@ namespace HotelApp.Menus
             
             while (true)
             {
-                // Gör en metod med dessa val
                 Console.Clear();
                 Console.WriteLine("Kundmeny");
                 Console.WriteLine("1. Skapa kund");
@@ -34,24 +33,24 @@ namespace HotelApp.Menus
                         case 1:
                             customerServiceManager.CreateCustomer();
                             break;
+
                         case 2:
                             customerServiceManager.CustomerInfo();
                             break;
+
                         case 3:
                             customerServiceManager.UpdateCustomer();
                             break;
+
                         case 4:
                             customerServiceManager.DeleteCustomer();
                             break;
+
                         case 5:
                             return;
+
                         default:
-                            // Metod för detta
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("Ogiltigt val. Vänligen välj ett alternativ mellan 1 till 5.");
-                            Console.ForegroundColor = ConsoleColor.Gray;
-                            Console.ReadKey();
-                            break;
+                            continue;
                     }
                 }
             }
