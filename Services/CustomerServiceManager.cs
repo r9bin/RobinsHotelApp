@@ -26,8 +26,6 @@ namespace HotelApp.Services
 
 
 
-
-
         public void CreateCustomer()
         {
             Console.Clear();
